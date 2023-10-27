@@ -14,6 +14,13 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const (
+	SHOTS               = 24
+	WAIT_GAME_LAUNCH    = 15
+	WAIT_GENERATION     = 15
+	WAIT_CHUNKS_LOADING = 45
+)
+
 type PlayerPos struct {
 	x  string
 	y  string
@@ -31,7 +38,7 @@ func main() {
 	launchGame()
 	createNewWorld()
 	setupScreenshot()
-	for i := 0; i < 5; i++ {
+	for i := 0; i < SHOTS; i++ {
 		takeRandomScreenshot()
 		postScreenshotToSocialMedia()
 	}
@@ -80,7 +87,7 @@ func launchGame() {
 		log.Fatalf("Failed to start Minecraft: %s", err)
 	}
 	// Wait for the game to launch
-	time.Sleep(15 * time.Second)
+	time.Sleep(WAIT_GAME_LAUNCH * time.Second)
 }
 
 func createNewWorld() {
@@ -101,7 +108,7 @@ func createNewWorld() {
 	robotgo.KeyTap("enter") // Create new world
 
 	// Wait for world generation to complete
-	time.Sleep(20 * time.Second)
+	time.Sleep(WAIT_GENERATION * time.Second)
 }
 
 func setupScreenshot() {
@@ -121,7 +128,7 @@ func takeRandomScreenshot() {
 	for i := 0; i < 16; i++ { // 32 = 256/8/2 to avoid too many iterations
 		runMinecraftChatCommand("/execute as @p at @s unless block ~ ~-8 ~ minecraft:air run tp @s ~ ~8 ~")
 	}
-	time.Sleep((30 * time.Second) - preloadingTime.Sub(time.Now())) // Wait for the chunks generation and rendering
+	time.Sleep((WAIT_CHUNKS_LOADING * time.Second) - time.Now().Sub(preloadingTime)) // Wait for the chunks generation and rendering
 
 	// Take a screenshot
 	robotgo.KeyTap("f2") // Take native screenshot
