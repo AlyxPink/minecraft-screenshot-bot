@@ -71,8 +71,8 @@ func launchGame() {
 		"--xuid", os.Getenv("XUID"),
 		"--userType", "msa",
 		"--versionType", "release",
-		"--width", "2048",
-		"--height", "1536",
+		"--width", "1920",
+		"--height", "1080",
 		"--quickPlayPath", "/Users/alyx/Minecraft/Install/quickPlay/java/1698398215400.json",
 	)
 
