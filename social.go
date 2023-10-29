@@ -24,14 +24,15 @@ func postScreenshotToSocialMedia(screenFile string, iteration int) {
 	}
 	log.Info(fmt.Sprintf("Screenshot uploaded %s (%s)", screenFile, media.URL))
 
-	scheduledAt := time.Now().UTC().Add(time.Hour * time.Duration(iteration)) // TODO: Set to X hours after latest post
-	status, err := c.PostStatus(context.Background(), &mastodon.Toot{
+	scheduledAt := time.Now().Add(time.Hour * time.Duration(iteration)) // TODO: Set to X hours after latest post
+	toot := &mastodon.Toot{
 		MediaIDs:    []mastodon.ID{media.ID},
 		Sensitive:   false,
 		Visibility:  "unlisted",
 		Language:    "EN",
 		ScheduledAt: &scheduledAt,
-	})
+	}
+	status, err := c.PostStatus(context.Background(), toot)
 	if err != nil {
 		log.Fatal(err)
 	}

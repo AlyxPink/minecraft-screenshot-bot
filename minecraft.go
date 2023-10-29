@@ -109,8 +109,16 @@ func setRandomTime() {
 }
 
 func setRandomWeather() {
-	options := []string{"clear", "rain", "thunder"}
-	weather := options[rand.Intn(len(options))]
+	var weather string
+	rand := rand.Float64()
+	switch {
+	case rand <= 0.15: // 15% chance of rain
+		weather = "rain"
+	case rand >= 0.9: // 10% chance of thunderstorm
+		weather = "thunder"
+	default:
+		weather = "clear"
+	}
 	log.Info(fmt.Sprintf("Weather set to %s", weather))
 	runMinecraftChatCommand(fmt.Sprintf("/weather %s", weather))
 }
@@ -130,13 +138,11 @@ func teleportPlayer() {
 	time.Sleep((WAIT_CHUNKS_LOADING * time.Second)) // Wait for the chunks generation and rendering
 }
 
-func takeRandomScreenshot() string {
+func takeRandomScreenshot() {
 	// Take a screenshot
 	log.Info("Taking screenshot by pressing F2")
 	robotgo.KeyTap("f2")        // Take native screenshot
 	time.Sleep(2 * time.Second) // Save screenshot
-
-	return getLatestScreenshot()
 }
 
 func quitGame() {
