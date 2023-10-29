@@ -6,9 +6,8 @@ Automatically capture and share your Minecraft moments! This script launches Min
 
 ## 📸 Sample Screenshots
 
-|                                               |                                               |
-| :-------------------------------------------: | :-------------------------------------------: |
 | ![Screenshot 1](./docs/img/screenshot_01.png) | ![Screenshot 2](./docs/img/screenshot_02.png) |
+| :-------------------------------------------: | :-------------------------------------------: |
 | ![Screenshot 3](./docs/img/screenshot_03.png) | ![Screenshot 4](./docs/img/screenshot_04.png) |
 
 ## 🌐 See the bot running
