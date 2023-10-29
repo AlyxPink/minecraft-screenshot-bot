@@ -11,9 +11,13 @@ Automatically capture and share your Minecraft moments! This script launches Min
 | ![Screenshot 1](./docs/img/screenshot_01.png) | ![Screenshot 2](./docs/img/screenshot_02.png) |
 | ![Screenshot 3](./docs/img/screenshot_03.png) | ![Screenshot 4](./docs/img/screenshot_04.png) |
 
+## 🌐 See the bot running
+
+Curious to see the bot in action? Check it out on Mastodon at [3615.computer/@CraftViews](https://3615.computer/@CraftViews/).
+
 ## 🚧 Current Status: Proof-of-Concept
 
-As it stands, this bot serves as a basic proof-of-concept. While functional, automating the entire process without tying up your computer requires further optimization.
+As it stands, this bot serves as a basic proof-of-concept built over a week-end. While functional, automating the entire process without tying up your computer requires further optimization.
 
 Considerations for future Enhancements:
 
