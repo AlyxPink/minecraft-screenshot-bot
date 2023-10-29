@@ -2,8 +2,6 @@ module minecraft-screenshot-bot
 
 go 1.21.3
 
-require github.com/go-co-op/gocron v1.35.2
-
 require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
@@ -37,11 +35,8 @@ require (
 require (
 	github.com/charmbracelet/log v0.2.5
 	github.com/go-vgo/robotgo v0.100.10
-	github.com/google/uuid v1.3.1 // indirect
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-mastodon v0.0.6
-	github.com/robfig/cron/v3 v3.0.1 // indirect
-	go.uber.org/atomic v1.9.0 // indirect
 )
 
 replace github.com/mattn/go-mastodon => github.com/VictorBersy/go-mastodon v0.0.0-20231029192652-40eaccca403d
