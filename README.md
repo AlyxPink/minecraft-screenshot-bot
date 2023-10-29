@@ -47,4 +47,5 @@ MASTODON_CLIENT_SECRET=
 MASTODON_ACCESS_TOKEN=
 ```
 
-💡 **Pro Tip:** To simplify the configuration process, launch your Minecraft game as usual. Then, capture the command line used to run the game, for instance using `ps aux`. This will provide the exact details required for the bot's setup.
+> [!IMPORTANT]  
+> To simplify the configuration process, launch your Minecraft game as usual. Then, capture the command line used to run the game, for instance using `ps aux`. This will provide the exact details required for the bot's setup.
