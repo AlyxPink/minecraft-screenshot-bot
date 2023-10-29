@@ -21,7 +21,8 @@ func main() {
 		setRandomTime()
 		setRandomWeather()
 		teleportPlayer()
-		path := takeRandomScreenshot()
+		takeRandomScreenshot()
+		path := getLatestScreenshot()
 		postScreenshotToSocialMedia(path, i) // TODO: Run in background
 	}
 	quitGame()
@@ -29,6 +30,6 @@ func main() {
 }
 
 func cleanup() {
-	// TODO: delete latest created world => Name them "BOT_TODELETE_XXX" to simplify the deletion process?
+	// TODO: delete latest created world
 	// TODO: delete screenshots files (?)
 }
