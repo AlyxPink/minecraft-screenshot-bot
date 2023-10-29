@@ -19,6 +19,7 @@ func main() {
 	for i := 0; i < SHOTS; i++ {
 		log.Info(fmt.Sprintf("** Starting a new shot (%d/%d) **", i, SHOTS))
 		setRandomTime()
+		setRandomWeather()
 		teleportPlayer()
 		path := takeRandomScreenshot()
 		postScreenshotToSocialMedia(path, i) // TODO: Run in background

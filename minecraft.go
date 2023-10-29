@@ -66,6 +66,7 @@ func launchGame() {
 		log.Fatalf("Failed to start Minecraft: %s", err)
 	}
 	// Wait for the game to launch
+	log.Info("Game launching", "sleep", WAIT_GAME_LAUNCH)
 	time.Sleep(WAIT_GAME_LAUNCH * time.Second)
 }
 
@@ -90,11 +91,12 @@ func createNewWorld() {
 	robotgo.KeyTap("enter") // Create new world
 
 	// Wait for world generation to complete
+	log.Info("Generating world", "sleep", WAIT_GENERATION)
 	time.Sleep(WAIT_GENERATION * time.Second)
 }
 
 func setupScreenshot() {
-	// Set random view
+	time.Sleep(1)
 	runMinecraftChatCommand("/gamemode spectator")
 	time.Sleep(1)
 	robotgo.KeyTap("f1") // Hide HUD
@@ -106,6 +108,13 @@ func setRandomTime() {
 	runMinecraftChatCommand(fmt.Sprintf("/time set %s", dayTime))
 }
 
+func setRandomWeather() {
+	options := []string{"clear", "rain", "thunder"}
+	weather := options[rand.Intn(len(options))]
+	log.Info(fmt.Sprintf("Weather set to %s", weather))
+	runMinecraftChatCommand(fmt.Sprintf("/weather %s", weather))
+}
+
 func teleportPlayer() {
 	// Teleport the player to random surface location in a 20,000×20,000-block area centered on (0,0)
 	runMinecraftChatCommand("/spreadplayers 0 0 0 10000 true @p")
@@ -114,14 +123,16 @@ func teleportPlayer() {
 	rot := getRandomAngle()
 	log.Info(fmt.Sprintf("Random rotation: 'RX: %s, RZ: %s'", rot.rx, rot.rz))
 	runMinecraftChatCommand(fmt.Sprintf("/tp @p ~ ~ ~ %s %s", rot.rx, rot.rz))
-	// Teleport player 15 blocks above max
-	runMinecraftChatCommand(fmt.Sprintf("/tp @p ~ ~%d ~", rand.Intn(16)))
+	// Teleport player 8 blocks above max
+	runMinecraftChatCommand(fmt.Sprintf("/tp @p ~ ~%d ~", rand.Intn(9)))
 
+	log.Info("Loading chunks", "sleep", WAIT_CHUNKS_LOADING)
 	time.Sleep((WAIT_CHUNKS_LOADING * time.Second)) // Wait for the chunks generation and rendering
 }
 
 func takeRandomScreenshot() string {
 	// Take a screenshot
+	log.Info("Taking screenshot by pressing F2")
 	robotgo.KeyTap("f2")        // Take native screenshot
 	time.Sleep(2 * time.Second) // Save screenshot
 
@@ -207,5 +218,6 @@ func getRandomAngle() PlayerRot {
 }
 
 func getRandomTime() string {
-	return fmt.Sprint(rand.Intn(24000 + 1))
+	// Set time between 05:00 and 21:00
+	return fmt.Sprint(rand.Intn(5000) + rand.Intn(16000))
 }
