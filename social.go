@@ -18,23 +18,35 @@ func postScreenshotToSocialMedia(screenFile string, iteration int) {
 		AccessToken:  os.Getenv("MASTODON_ACCESS_TOKEN"),
 	})
 
-	media, err := c.UploadMedia(context.Background(), screenFile)
+	// Open screenshot
+	screenshot, err := os.Open(screenFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Info(fmt.Sprintf("Screenshot uploaded %s (%s)", screenFile, media.URL))
 
+	// Upload media
+	var attachment *mastodon.Attachment
+	attachment, err = c.UploadMediaFromMedia(context.Background(), &mastodon.Media{
+		File:        screenshot,
+		Description: "Randomly generated Minecraft screenshot by CraftViews bot.",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Info(fmt.Sprintf("Screenshot uploaded %s (%s)", screenFile, attachment.URL))
+
+	// Schedule post
 	scheduledAt := time.Now().Add(time.Hour * time.Duration(iteration)) // TODO: Set to X hours after latest post
-	toot := &mastodon.Toot{
-		MediaIDs:    []mastodon.ID{media.ID},
+	post := &mastodon.Toot{
+		MediaIDs:    []mastodon.ID{attachment.ID},
 		Sensitive:   false,
 		Visibility:  "unlisted",
 		Language:    "EN",
 		ScheduledAt: &scheduledAt,
 	}
-	status, err := c.PostStatus(context.Background(), toot)
+	status, err := c.PostStatus(context.Background(), post)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Info(fmt.Sprintf("Post scheduled at %s (%s)", scheduledAt.String(), status.URL))
+	log.Info(fmt.Sprintf("Post scheduled at %s (ID: %s)", scheduledAt.String(), status.ID))
 }
