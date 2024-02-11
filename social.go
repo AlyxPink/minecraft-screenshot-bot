@@ -10,7 +10,7 @@ import (
 	"github.com/mattn/go-mastodon"
 )
 
-func postScreenshotToSocialMedia(screenFile string, iteration int) {
+func postScreenshotToSocialMedia(screenshot *os.File, iteration int) {
 	c := mastodon.NewClient(&mastodon.Config{
 		Server:       os.Getenv("MASTODON_SERVER"),
 		ClientID:     os.Getenv("MASTODON_CLIENT_ID"),
@@ -18,22 +18,16 @@ func postScreenshotToSocialMedia(screenFile string, iteration int) {
 		AccessToken:  os.Getenv("MASTODON_ACCESS_TOKEN"),
 	})
 
-	// Open screenshot
-	screenshot, err := os.Open(screenFile)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Upload media
+	// Upload media to Mastodon
 	var attachment *mastodon.Attachment
-	attachment, err = c.UploadMediaFromMedia(context.Background(), &mastodon.Media{
+	attachment, err := c.UploadMediaFromMedia(context.Background(), &mastodon.Media{
 		File:        screenshot,
-		Description: "Randomly generated Minecraft screenshot by CraftViews bot.",
+		Description: "Randomly generated Minecraft screenshot by CraftViews bot.", // Default alt-text
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Info(fmt.Sprintf("Screenshot uploaded %s (%s)", screenFile, attachment.URL))
+	log.Info(fmt.Sprintf("Screenshot uploaded %s (%s)", screenshot.Name(), attachment.URL))
 
 	// Schedule post
 	scheduledAt := time.Now().Add(time.Hour * 4 * time.Duration(iteration)) // TODO: Set to X hours after latest post

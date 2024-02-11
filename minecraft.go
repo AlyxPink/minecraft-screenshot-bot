@@ -149,7 +149,7 @@ func quitGame() {
 	robotgo.KeyTap("q", "cmd")
 }
 
-func getLatestScreenshot() string {
+func getLatestScreenshot() *os.File {
 	fileInfo, err := getLastCreatedFile()
 	if err != nil {
 		log.Fatal(err)
@@ -161,7 +161,11 @@ func getLatestScreenshot() string {
 		log.Fatal("Screenshot not found.")
 	}
 
-	return filepath.Join(os.Getenv("SCREENSHOTS_DIR_PATH"), fileInfo.Name())
+	screenshot, err := os.Open(filepath.Join(os.Getenv("SCREENSHOTS_DIR_PATH"), fileInfo.Name()))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return screenshot
 }
 
 // getLastCreatedFile takes a directory path as an argument and returns the FileInfo

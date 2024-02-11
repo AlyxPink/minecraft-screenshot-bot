@@ -22,8 +22,11 @@ func main() {
 		setRandomWeather()
 		teleportPlayer()
 		takeRandomScreenshot()
-		path := getLatestScreenshot()
-		postScreenshotToSocialMedia(path, i) // TODO: Run in background
+		go func(iteration int) {
+			screenshot := getLatestScreenshot()
+			archiveScreenshot(screenshot)
+			//postScreenshotToSocialMedia(screenshot, iteration)
+		}(i)
 	}
 	quitGame()
 	cleanup()
