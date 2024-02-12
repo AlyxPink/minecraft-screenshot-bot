@@ -96,9 +96,9 @@ func createNewWorld() {
 }
 
 func setupScreenshot() {
-	time.Sleep(1)
+	time.Sleep(2 * time.Second)
 	runMinecraftChatCommand("/gamemode spectator")
-	time.Sleep(1)
+	time.Sleep(1 * time.Second)
 	robotgo.KeyTap("f1") // Hide HUD
 }
 
@@ -149,7 +149,7 @@ func quitGame() {
 	robotgo.KeyTap("q", "cmd")
 }
 
-func getLatestScreenshot() *os.File {
+func getLatestScreenshot() string {
 	fileInfo, err := getLastCreatedFile()
 	if err != nil {
 		log.Fatal(err)
@@ -161,11 +161,7 @@ func getLatestScreenshot() *os.File {
 		log.Fatal("Screenshot not found.")
 	}
 
-	screenshot, err := os.Open(filepath.Join(os.Getenv("SCREENSHOTS_DIR_PATH"), fileInfo.Name()))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return screenshot
+	return filepath.Join(os.Getenv("SCREENSHOTS_DIR_PATH"), fileInfo.Name())
 }
 
 // getLastCreatedFile takes a directory path as an argument and returns the FileInfo

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/charmbracelet/log"
 	"github.com/joho/godotenv"
 )
@@ -13,23 +11,24 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	launchGame()
-	createNewWorld()
-	setupScreenshot()
-	for i := 0; i < SHOTS; i++ {
-		log.Info(fmt.Sprintf("** Starting a new shot (%d/%d) **", i, SHOTS))
-		setRandomTime()
-		setRandomWeather()
-		teleportPlayer()
-		takeRandomScreenshot()
-		go func(iteration int) {
-			screenshot := getLatestScreenshot()
-			archiveScreenshot(screenshot)
-			//postScreenshotToSocialMedia(screenshot, iteration)
-		}(i)
-	}
-	quitGame()
-	cleanup()
+	screenshot_path := getLatestScreenshot()
+	url := uploadToS3(screenshot_path)
+	postScreenshotToSocialMedia(screenshot_path, url, 1)
+
+	// launchGame()
+	// createNewWorld()
+	// setupScreenshot()
+	// for i := 0; i < SHOTS; i++ {
+	// 	log.Info(fmt.Sprintf("** Starting a new shot (%d/%d) **", i, SHOTS))
+	// 	setRandomTime()
+	// 	setRandomWeather()
+	// 	teleportPlayer()
+	// 	takeRandomScreenshot()
+	//  screenshot := getLatestScreenshot()
+	// 	postScreenshotToSocialMedia(screenshot, i)
+	// }
+	// quitGame()
+	// cleanup()
 }
 
 func cleanup() {
