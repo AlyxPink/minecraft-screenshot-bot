@@ -2,7 +2,7 @@
 
 ![Minecraft Screenshot Bot Banner](./docs/img/banner.png)
 
-Automatically capture and share your Minecraft moments! This script launches Minecraft, takes screenshots, and posts them directly to Mastodon.
+Capture and share the beauty of Minecraft landscapes! This script launches Minecraft, takes screenshots, and posts them to Mastodon.
 
 How does it work? French article: https://blog.alyxpractice.com/comment-fonctionne-mon-bot-craftviews/
 
@@ -20,7 +20,7 @@ Curious to see the bot in action? Check it out on Mastodon at [3615.computer/@Cr
 
 As it stands, this bot serves as a basic proof-of-concept built over a week-end. While functional, automating the entire process without tying up your computer requires further optimization.
 
-Considerations for future Enhancements:
+Considerations for future enhancements:
 
 - Exploring the possibility of using cloud instances with GPUs.
 - Implementing a more dynamic path configuration instead of the current hardcoded paths based on my laptop setup.
@@ -47,7 +47,16 @@ MASTODON_SERVER=https://my.instance.example
 MASTODON_CLIENT_ID=
 MASTODON_CLIENT_SECRET=
 MASTODON_ACCESS_TOKEN=
+
+OPENAI_API_KEY=
+
+S3_BUCKET_NAME=
+S3_PUBLIC_DOMAIN=
+S3_ACCOUNT_ID=
+S3_ACCESS_KEY_ID=
+S3_ACCESS_KEY_SECRET=
+
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > To simplify the configuration process, launch your Minecraft game as usual. Then, capture the command line used to run the game, for instance using `ps aux`. This will provide the exact details required for the bot's setup.

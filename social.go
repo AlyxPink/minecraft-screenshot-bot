@@ -34,20 +34,19 @@ func postScreenshotToSocialMedia(screenshot_path string, screenshot_url url.URL,
 		File:        screenshot,
 		Description: altText,
 	})
-	log.Info("File", "screenshot", screenshot)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("Error while uploading screenshot to Mastodon %s (%s)", screenshot.Name(), err))
 	}
 	log.Info(fmt.Sprintf("Screenshot uploaded %s (%s)", screenshot.Name(), attachment.URL))
 
 	// Schedule post
-	//scheduledAt := time.Now().Add(time.Hour * 4 * time.Duration(iteration)) // TODO: Set to X hours after latest post
+	//scheduledAt := time.Now().Add(time.Hour * 4 * time.Duration(iteration)) // TODO: Set to X hours after latest post TODO: edit
 	scheduledAt := time.Now()
 	post := &mastodon.Toot{
 		MediaIDs:  []mastodon.ID{attachment.ID},
 		Sensitive: false,
-		//Visibility:  "unlisted",
-		Visibility:  mastodon.VisibilityDirectMessage,
+		//Visibility:  "unlisted", // TODO: edit
+		Visibility:  mastodon.VisibilityDirectMessage, // TODO: edit
 		Language:    "EN",
 		ScheduledAt: &scheduledAt,
 	}
@@ -55,6 +54,6 @@ func postScreenshotToSocialMedia(screenshot_path string, screenshot_url url.URL,
 	if err != nil {
 		log.Fatal(err)
 	}
-	//log.Info(fmt.Sprintf("Post scheduled at %s (ID: %s)", scheduledAt.String(), status.ID))
+	//log.Info(fmt.Sprintf("Post scheduled at %s (ID: %s)", scheduledAt.String(), status.ID)) TODO: edit
 	log.Info(fmt.Sprintf("Toot sent (ID: %s)", status.ID))
 }
