@@ -35,7 +35,7 @@ func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
 	log.Info("Screenshot uploaded", "screenshot ID", upload.Screenshot.ID, "attachment URL", attachment.URL)
 
 	// Schedule post
-	scheduledAt := time.Now().Add(time.Hour * 4 * time.Duration(u.Iteration)) // TODO: Set to X hours after latest post TODO: edit
+	scheduledAt := time.Now().Add(time.Hour * 4 * time.Duration(u.Iteration)) // TODO: Set to X hours after latest post
 
 	post := &mastodon.Toot{
 		MediaIDs:  []mastodon.ID{attachment.ID},
@@ -51,7 +51,6 @@ func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
 		log.Fatal(err)
 	}
 
-	//log.Info(fmt.Sprintf("Post scheduled at %s (ID: %s)", scheduledAt.String(), status.ID)) TODO: edit
 	log.Info("Post scheduled", "scheduledAt", scheduledAt.String(), "status ID", status.ID)
 
 	return nil, attachment.URL
