@@ -1,4 +1,4 @@
-module minecraft-screenshot-bot
+module github.com/VictorBersy/minecraft-screenshot-bot
 
 go 1.21.3
 
@@ -54,6 +54,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.48.1
 	github.com/charmbracelet/log v0.2.5
 	github.com/go-vgo/robotgo v0.100.10
+	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-mastodon v0.0.6
 	github.com/sashabaranov/go-openai v1.19.3

@@ -1,11 +1,10 @@
-package main
+package uploader
 
 import (
 	"context"
 	"fmt"
 	"net/url"
 	"os"
-	"path/filepath"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -14,28 +13,25 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-func uploadToS3(screenshot_path string) url.URL {
+type R2 struct{}
+
+func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
+	log.SetPrefix("R2 uploader")
 	var bucketName = os.Getenv("S3_BUCKET_NAME")
 
-	client := getCloudFlareR2Client()
+	client := newR2Client(ctx)
 
-	// Open screenshot file
-	screenshot, err := os.Open(screenshot_path)
-	if err != nil {
-		log.Fatal(err)
-	}
+	path := fmt.Sprintf("craftviews/%s", upload.Screenshot.ID)
 
-	filename := filepath.Base(screenshot.Name())
-	path := fmt.Sprintf("craftviews/%s", filename)
-
-	_, err = client.PutObject(context.TODO(), &s3.PutObjectInput{
+	_, err := client.PutObject(ctx, &s3.PutObjectInput{
 		Bucket: aws.String(bucketName),
 		Key:    aws.String(path),
-		Body:   screenshot,
+		Body:   upload.Screenshot.File,
 	})
 
 	if err != nil {
 		log.Fatal("Error while uploading screenshot to s3", err)
+		return err, ""
 	}
 
 	objectURL := url.URL{
@@ -46,10 +42,10 @@ func uploadToS3(screenshot_path string) url.URL {
 
 	log.Info("Screenshot uploaded to R2.", "URL", objectURL.String())
 
-	return objectURL
+	return nil, objectURL.String()
 }
 
-func getCloudFlareR2Client() *s3.Client {
+func newR2Client(ctx context.Context) *s3.Client {
 	var accountId = os.Getenv("S3_ACCOUNT_ID")
 	var accessKeyId = os.Getenv("S3_ACCESS_KEY_ID")
 	var accessKeySecret = os.Getenv("S3_ACCESS_KEY_SECRET")
@@ -60,7 +56,8 @@ func getCloudFlareR2Client() *s3.Client {
 		}, nil
 	})
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(),
+	cfg, err := config.LoadDefaultConfig(
+		ctx,
 		config.WithEndpointResolverWithOptions(r2Resolver),
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyId, accessKeySecret, "")),
 		config.WithRegion("auto"),

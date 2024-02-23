@@ -1,20 +1,23 @@
-package main
+package ai
 
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"os"
 
 	"github.com/charmbracelet/log"
 	"github.com/sashabaranov/go-openai"
 )
 
-func describeImage(screenshot_url url.URL) string {
+type AltText struct {
+	Long string
+}
+
+func DescribeImage(ctx context.Context, screenshot_url string) AltText {
 	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
 
 	log.Info(fmt.Sprint("Sending request to OpenAI to get alt text..."))
-	respUrl, err := client.CreateChatCompletion(context.Background(), openai.ChatCompletionRequest{
+	resp, err := client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: openai.GPT4VisionPreview,
 		Messages: []openai.ChatCompletionMessage{
 			{
@@ -27,7 +30,7 @@ func describeImage(screenshot_url url.URL) string {
 					{
 						Type: openai.ChatMessagePartTypeImageURL,
 						ImageURL: &openai.ChatMessageImageURL{
-							URL:    screenshot_url.String(),
+							URL:    screenshot_url,
 							Detail: openai.ImageURLDetailLow,
 						},
 					},
@@ -39,12 +42,12 @@ func describeImage(screenshot_url url.URL) string {
 
 	if err != nil {
 		fmt.Printf("Error while describing image, returning default alt-text: %v\n", err)
-		return "Randomly generated Minecraft screenshot by CraftViews bot."
+		return AltText{Long: "Minecraft screenshot by CraftViews bot."}
 	}
 
-	altText := respUrl.Choices[0].Message.Content
+	altText := resp.Choices[0].Message.Content
 
 	log.Info(fmt.Sprintf("Screenshot alt-text generated: %s", altText))
 
-	return fmt.Sprint("Randomly generated Minecraft screenshot. AI generated alt-text:\" ", altText)
+	return AltText{Long: fmt.Sprintf("Minecraft screenshot. AI generated alt text: %s", altText)}
 }
