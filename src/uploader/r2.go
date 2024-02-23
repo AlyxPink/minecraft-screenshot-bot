@@ -17,7 +17,7 @@ type R2 struct{}
 
 func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
 	log.SetPrefix("R2 uploader")
-	var bucketName = os.Getenv("S3_BUCKET_NAME")
+	var bucketName = os.Getenv("R2_BUCKET_NAME")
 
 	client := newR2Client(ctx)
 
@@ -30,13 +30,13 @@ func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
 	})
 
 	if err != nil {
-		log.Fatal("Error while uploading screenshot to s3", err)
+		log.Fatal("Error while uploading screenshot to R2", err)
 		return err, ""
 	}
 
 	objectURL := url.URL{
 		Scheme: "https",
-		Host:   os.Getenv("S3_PUBLIC_DOMAIN"),
+		Host:   os.Getenv("R2_PUBLIC_DOMAIN"),
 		Path:   fmt.Sprintf("/%s", path),
 	}
 
@@ -46,9 +46,9 @@ func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
 }
 
 func newR2Client(ctx context.Context) *s3.Client {
-	var accountId = os.Getenv("S3_ACCOUNT_ID")
-	var accessKeyId = os.Getenv("S3_ACCESS_KEY_ID")
-	var accessKeySecret = os.Getenv("S3_ACCESS_KEY_SECRET")
+	var accountId = os.Getenv("R2_ACCOUNT_ID")
+	var accessKeyId = os.Getenv("R2_ACCESS_KEY_ID")
+	var accessKeySecret = os.Getenv("R2_ACCESS_KEY_SECRET")
 
 	r2Resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		return aws.Endpoint{
