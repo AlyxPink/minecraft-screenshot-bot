@@ -3,7 +3,6 @@ package uploader
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"os"
 	"time"
 
@@ -39,7 +38,6 @@ func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
 
 	post := &mastodon.Toot{
 		MediaIDs:    []mastodon.ID{attachment.ID},
-		Status:      fmt.Sprintf("Screenshot ID: %s", upload.Screenshot.ID),
 		Sensitive:   false,
 		Visibility:  mastodon.VisibilityUnlisted,
 		Language:    "EN",
