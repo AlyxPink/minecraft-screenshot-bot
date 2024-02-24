@@ -27,9 +27,10 @@ func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
 	// Upload the screenshot to R2
 	client := newR2Client(ctx)
 	_, err := client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(os.Getenv("R2_BUCKET_NAME")),
-		Key:    aws.String(r2.objectPath),
-		Body:   bytes.NewReader(upload.Screenshot.File),
+		Bucket:      aws.String(os.Getenv("R2_BUCKET_NAME")),
+		Key:         aws.String(r2.objectPath),
+		Body:        bytes.NewReader(upload.Screenshot.File),
+		ContentType: aws.String("image/png"),
 	})
 
 	if err != nil {
