@@ -2,7 +2,6 @@ package screenshot
 
 import (
 	"fmt"
-	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -17,7 +16,7 @@ type Screenshot struct {
 	ID      uuid.UUID
 	Name    string
 	Path    string
-	File    io.Reader
+	File    []byte
 	AltText ai.AltText
 }
 
@@ -35,8 +34,7 @@ func GetLatestScreenshot() Screenshot {
 
 	filePath := filepath.Join(os.Getenv("SCREENSHOTS_DIR_PATH"), fileInfo.Name())
 
-	file, err := os.Open(filePath)
-	defer file.Close()
+	file, err := os.ReadFile(filePath)
 	if err != nil {
 		log.Fatal(fmt.Sprintf("Error while opening screenshot file %s", filePath), "error", err)
 	}

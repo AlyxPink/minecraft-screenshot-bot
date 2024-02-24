@@ -22,7 +22,7 @@ type PlayerRot struct {
 	rz string
 }
 
-func launchGame() {
+func Launch() {
 	log.Info("Starting Minecraft...")
 	cmd := exec.Command(
 		"/Users/alyx/Minecraft/Install/runtime/java-runtime-gamma/mac-os-arm64/java-runtime-gamma/jre.bundle/Contents/Home/bin/java",
@@ -67,7 +67,7 @@ func launchGame() {
 	time.Sleep(WAIT_GAME_LAUNCH * time.Second)
 }
 
-func createNewWorld() {
+func CreateNewWorld() {
 	// Navigate the menu to create a new world
 	robotgo.KeySleep = 350
 	robotgo.KeyTap("down")  // Singleplayer
@@ -92,20 +92,20 @@ func createNewWorld() {
 	time.Sleep(WAIT_GENERATION * time.Second)
 }
 
-func setupScreenshot() {
+func SetupScreenshot() {
 	time.Sleep(2 * time.Second)
 	runMinecraftChatCommand("/gamemode spectator")
 	time.Sleep(1 * time.Second)
 	robotgo.KeyTap("f1") // Hide HUD
 }
 
-func setRandomTime() {
+func SetRandomTime() {
 	dayTime := getRandomTime()
 	log.Info(fmt.Sprintf("Time set to %s", dayTime))
 	runMinecraftChatCommand(fmt.Sprintf("/time set %s", dayTime))
 }
 
-func setRandomWeather() {
+func SetRandomWeather() {
 	// Set weather to clear by default
 	weather := "clear"
 
@@ -119,7 +119,7 @@ func setRandomWeather() {
 	runMinecraftChatCommand(fmt.Sprintf("/weather %s", weather))
 }
 
-func teleportPlayer() {
+func TeleportPlayer() {
 	// Teleport the player to random surface location in a 20,000×20,000-block area centered on (0,0)
 	runMinecraftChatCommand("/spreadplayers 0 0 0 10000 true @p")
 	time.Sleep(2 * time.Second) // Wait for the TP to happen
@@ -134,14 +134,14 @@ func teleportPlayer() {
 	time.Sleep((WAIT_CHUNKS_LOADING * time.Second)) // Wait for the chunks generation and rendering
 }
 
-func takeRandomScreenshot() {
+func TakeRandomScreenshot() {
 	// Take a screenshot
 	log.Info("Taking screenshot by pressing F2")
 	robotgo.KeyTap("f2")        // Take native screenshot
 	time.Sleep(2 * time.Second) // Save screenshot
 }
 
-func quitGame() {
+func QuitGame() {
 	// Close the game
 	robotgo.KeyTap("q", "cmd")
 }

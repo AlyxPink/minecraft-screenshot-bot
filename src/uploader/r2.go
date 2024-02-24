@@ -1,10 +1,12 @@
 package uploader
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"net/url"
 	"os"
+	"path/filepath"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -13,20 +15,21 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-type R2 struct{}
+type R2 struct {
+	objectURL  url.URL
+	objectPath string
+}
 
 func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
-	log.SetPrefix("R2 uploader")
-	var bucketName = os.Getenv("R2_BUCKET_NAME")
+	// Set the object fields
+	r2.setObjectFields(upload)
 
+	// Upload the screenshot to R2
 	client := newR2Client(ctx)
-
-	path := fmt.Sprintf("craftviews/%s", upload.Screenshot.ID)
-
 	_, err := client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: aws.String(bucketName),
-		Key:    aws.String(path),
-		Body:   upload.Screenshot.File,
+		Bucket: aws.String(os.Getenv("R2_BUCKET_NAME")),
+		Key:    aws.String(r2.objectPath),
+		Body:   bytes.NewReader(upload.Screenshot.File),
 	})
 
 	if err != nil {
@@ -34,21 +37,15 @@ func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
 		return err, ""
 	}
 
-	objectURL := url.URL{
-		Scheme: "https",
-		Host:   os.Getenv("R2_PUBLIC_DOMAIN"),
-		Path:   fmt.Sprintf("/%s", path),
-	}
-
-	log.Info("Screenshot uploaded to R2.", "URL", objectURL.String())
-
-	return nil, objectURL.String()
+	return nil, r2.objectURL.String()
 }
 
 func newR2Client(ctx context.Context) *s3.Client {
-	var accountId = os.Getenv("R2_ACCOUNT_ID")
-	var accessKeyId = os.Getenv("R2_ACCESS_KEY_ID")
-	var accessKeySecret = os.Getenv("R2_ACCESS_KEY_SECRET")
+	var (
+		accountId       = os.Getenv("R2_ACCOUNT_ID")
+		accessKeyId     = os.Getenv("R2_ACCESS_KEY_ID")
+		accessKeySecret = os.Getenv("R2_ACCESS_KEY_SECRET")
+	)
 
 	r2Resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		return aws.Endpoint{
@@ -67,4 +64,24 @@ func newR2Client(ctx context.Context) *s3.Client {
 	}
 
 	return s3.NewFromConfig(cfg)
+}
+
+func (r2 *R2) setObjectFields(upload Upload) {
+	r2.objectPath = r2.getObjectPath(upload)
+	r2.objectURL = r2.getObjectURL(upload)
+}
+
+func (r2 *R2) getObjectPath(upload Upload) string {
+	return filepath.Join(
+		os.Getenv("R2_PATH_PREFIX"),
+		fmt.Sprint(upload.Screenshot.ID.String(), filepath.Ext(upload.Screenshot.Name)),
+	)
+}
+
+func (r2 *R2) getObjectURL(upload Upload) url.URL {
+	return url.URL{
+		Scheme: "https",
+		Host:   os.Getenv("R2_PUBLIC_DOMAIN"),
+		Path:   r2.objectPath,
+	}
 }

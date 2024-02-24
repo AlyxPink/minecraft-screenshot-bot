@@ -1,7 +1,9 @@
 package uploader
 
 import (
+	"bytes"
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -14,8 +16,6 @@ type Mastodon struct {
 }
 
 func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
-	log.SetPrefix("Mastodon uploader")
-
 	c := mastodon.NewClient(&mastodon.Config{
 		Server:       os.Getenv("MASTODON_SERVER"),
 		ClientID:     os.Getenv("MASTODON_CLIENT_ID"),
@@ -26,22 +26,22 @@ func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
 	// Upload media to Mastodon
 	var attachment *mastodon.Attachment
 	attachment, err := c.UploadMediaFromMedia(ctx, &mastodon.Media{
-		File:        upload.Screenshot.File,
+		File:        bytes.NewReader(upload.Screenshot.File),
 		Description: upload.Screenshot.AltText.Long,
 	})
 	if err != nil {
-		log.Fatal("Error while uploading screenshot", "screenshot ID", upload.Screenshot.ID, "error", err)
+		log.Error("Error while uploading screenshot", "screenshot ID", upload.Screenshot.ID, "error", err)
+		return err, ""
 	}
-	log.Info("Screenshot uploaded", "screenshot ID", upload.Screenshot.ID, "attachment URL", attachment.URL)
 
 	// Schedule post
-	scheduledAt := time.Now().Add(time.Hour * 4 * time.Duration(u.Iteration)) // TODO: Set to X hours after latest post
+	scheduledAt := time.Now().Add(time.Hour * 4 * time.Duration(u.Iteration))
 
 	post := &mastodon.Toot{
-		MediaIDs:  []mastodon.ID{attachment.ID},
-		Sensitive: false,
-		//Visibility:  "unlisted", // TODO: edit
-		Visibility:  mastodon.VisibilityDirectMessage, // TODO: edit
+		MediaIDs:    []mastodon.ID{attachment.ID},
+		Status:      fmt.Sprintf("Screenshot ID: %s", upload.Screenshot.ID),
+		Sensitive:   false,
+		Visibility:  mastodon.VisibilityUnlisted,
 		Language:    "EN",
 		ScheduledAt: &scheduledAt,
 	}
@@ -51,7 +51,7 @@ func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
 		log.Fatal(err)
 	}
 
-	log.Info("Post scheduled", "scheduledAt", scheduledAt.String(), "status ID", status.ID)
+	log.Info("Post scheduled", "scheduledAt", scheduledAt.String(), "statusID", status.ID)
 
 	return nil, attachment.URL
 }

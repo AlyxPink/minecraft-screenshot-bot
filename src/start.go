@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"sync"
 	"time"
 
 	"github.com/VictorBersy/minecraft-screenshot-bot/src/ai"
+	"github.com/VictorBersy/minecraft-screenshot-bot/src/minecraft"
 	"github.com/VictorBersy/minecraft-screenshot-bot/src/screenshot"
 	"github.com/VictorBersy/minecraft-screenshot-bot/src/uploader"
 	"github.com/charmbracelet/log"
@@ -17,71 +19,74 @@ const (
 )
 
 func Start() {
-	// launchGame()
-	// createNewWorld()
-	// setupScreenshot()
+	var wg sync.WaitGroup // Initialize a WaitGroup
+
+	minecraft.Launch()
+	minecraft.CreateNewWorld()
+	minecraft.SetupScreenshot()
 	for i := 0; i < SHOTS; i++ {
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
-		defer cancel()
-		// 	log.Info(fmt.Sprintf("** Taking a new screenshot (%d/%d) **", i, SHOTS))
-		// 	setRandomTime()
-		// 	setRandomWeather()
-		// 	teleportPlayer()
-		// 	takeRandomScreenshot()
+		log.Info(fmt.Sprintf("** Taking a new screenshot (%d/%d) **", i, SHOTS))
+		minecraft.SetRandomTime()
+		minecraft.SetRandomWeather()
+		minecraft.TeleportPlayer()
+		minecraft.TakeRandomScreenshot()
 		latestScreenshot := screenshot.GetLatestScreenshot()
-		log.SetPrefix(fmt.Sprintf("Screenshot ID: %s", latestScreenshot.ID))
-		go uploadScreenshot(ctx, i, latestScreenshot)
+		wg.Add(1) // Indicate that there's one more goroutine to wait for
+		go func(i int) {
+			defer cancel()
+			defer wg.Done() // Signal that this goroutine is done
+			uploadScreenshot(ctx, i, latestScreenshot)
+		}(i)
 	}
-	// quitGame()
-	// cleanup()
+	minecraft.QuitGame()
+	cleanup()
+	wg.Wait() // Wait for all goroutines to finish
 }
 
 func uploadScreenshot(ctx context.Context, i int, s screenshot.Screenshot) {
+	log.SetPrefix(fmt.Sprintf("Screenshot ID: %s", s.ID.String()))
 	// Set up the upload struct
 	upload := uploader.Upload{Screenshot: s}
 
 	// Upload to R2 first, so OpenAI can get the URL to describe the image
 	r2 := &uploader.R2{}
 	err, url := r2.Upload(ctx, upload)
-	if err != nil {
+	if err == nil {
+		// Use the R2 URL to get alt text from OpenAI
+		altText := ai.DescribeImage(ctx, url)
+		upload.Screenshot.AltText = altText
+	} else {
 		log.Error("Error uploading to R2: %v", err)
 		log.Warn("Skipping getting alt text from OpenAI")
-		log.Warn("Skipping Mastodon upload")
-		return
 	}
 
-	// Use the R2 URL to get alt text from OpenAI
-	altText := ai.DescribeImage(ctx, url)
-	upload.Screenshot.AltText = altText
-
-	// Prepare the uploaders
+	// Load the uploaders
 	uploaders := []uploader.Uploader{
 		&uploader.Mastodon{Iteration: i},
 	}
 	// Dispatch the uploads
 	for _, u := range uploaders {
-		go uploadWithRetry(u, upload)
+		uploadWithRetry(ctx, u, upload)
 	}
 }
 
-func uploadWithRetry(u uploader.Uploader, upload uploader.Upload) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
+func uploadWithRetry(ctx context.Context, u uploader.Uploader, upload uploader.Upload) {
 	maxRetries := 5
 	retryDelay := 5 * time.Second
 
 	for i := 0; i < maxRetries; i++ {
 		err, url := u.Upload(ctx, upload)
 		if err == nil {
-			log.Info("Uploaded to %T: %s", u, url)
-			continue
+			log.Info(fmt.Sprintf("Uploaded to %T: %s", u, url))
+			break
 		}
 
-		log.Error("Error uploading to %T: %v", u, err)
+		retryDelay = time.Duration(float64(retryDelay) * math.Pow(2, float64(i)))
+		log.Error("Error uploading", "retryDelay", retryDelay, "upload", upload, "err", err)
+
 		// Sleep for the current delay, then double it for the next iteration
 		time.Sleep(retryDelay)
-		retryDelay = time.Duration(float64(retryDelay) * math.Pow(2, float64(i)))
 	}
 }
 
