@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"time"
 
+	"github.com/VictorBersy/minecraft-screenshot-bot/src/screenshot"
 	"github.com/charmbracelet/log"
 	"github.com/go-vgo/robotgo"
 )
@@ -17,12 +18,36 @@ const (
 	WAIT_CHUNKS_LOADING = 45
 )
 
-type PlayerRot struct {
+type minecraft struct{}
+
+func New() *minecraft {
+	return &minecraft{}
+}
+
+func (m *minecraft) Setup() {
+	launch()
+	createNewWorld()
+	setupScreenshot()
+}
+
+func (m *minecraft) CaptureScreenshot() screenshot.Screenshot {
+	teleportPlayer()
+	setRandomTime()
+	setRandomWeather()
+	captureScreenshot()
+	return screenshot.GetLatest()
+}
+
+func (m *minecraft) Quit() {
+	quit()
+}
+
+type playerAngle struct {
 	rx string
 	rz string
 }
 
-func Launch() {
+func launch() {
 	log.Info("Starting Minecraft...")
 	cmd := exec.Command(
 		"/Users/alyx/Minecraft/Install/runtime/java-runtime-gamma/mac-os-arm64/java-runtime-gamma/jre.bundle/Contents/Home/bin/java",
@@ -67,7 +92,7 @@ func Launch() {
 	time.Sleep(WAIT_GAME_LAUNCH * time.Second)
 }
 
-func CreateNewWorld() {
+func createNewWorld() {
 	// Navigate the menu to create a new world
 	robotgo.KeySleep = 350
 	robotgo.KeyTap("down")  // Singleplayer
@@ -92,20 +117,20 @@ func CreateNewWorld() {
 	time.Sleep(WAIT_GENERATION * time.Second)
 }
 
-func SetupScreenshot() {
+func setupScreenshot() {
 	time.Sleep(2 * time.Second)
 	runMinecraftChatCommand("/gamemode spectator")
 	time.Sleep(1 * time.Second)
 	robotgo.KeyTap("f1") // Hide HUD
 }
 
-func SetRandomTime() {
+func setRandomTime() {
 	dayTime := getRandomTime()
 	log.Info(fmt.Sprintf("Time set to %s", dayTime))
 	runMinecraftChatCommand(fmt.Sprintf("/time set %s", dayTime))
 }
 
-func SetRandomWeather() {
+func setRandomWeather() {
 	// Set weather to clear by default
 	weather := "clear"
 
@@ -119,7 +144,7 @@ func SetRandomWeather() {
 	runMinecraftChatCommand(fmt.Sprintf("/weather %s", weather))
 }
 
-func TeleportPlayer() {
+func teleportPlayer() {
 	// Teleport the player to random surface location in a 20,000×20,000-block area centered on (0,0)
 	runMinecraftChatCommand("/spreadplayers 0 0 0 10000 true @p")
 	time.Sleep(2 * time.Second) // Wait for the TP to happen
@@ -134,14 +159,14 @@ func TeleportPlayer() {
 	time.Sleep((WAIT_CHUNKS_LOADING * time.Second)) // Wait for the chunks generation and rendering
 }
 
-func TakeRandomScreenshot() {
+func captureScreenshot() {
 	// Take a screenshot
 	log.Info("Taking screenshot by pressing F2")
 	robotgo.KeyTap("f2")        // Take native screenshot
 	time.Sleep(2 * time.Second) // Save screenshot
 }
 
-func QuitGame() {
+func quit() {
 	// Close the game
 	robotgo.KeyTap("q", "cmd")
 }
@@ -152,8 +177,8 @@ func runMinecraftChatCommand(cmd string) {
 	robotgo.KeyTap("enter") // Run command
 }
 
-func getRandomAngle() PlayerRot {
-	return PlayerRot{
+func getRandomAngle() (rotation playerAngle) {
+	return playerAngle{
 		rx: fmt.Sprint(rand.Intn(361)),
 		rz: fmt.Sprint(rand.Intn(41) - 20), // Keep between -20 and +20
 	}

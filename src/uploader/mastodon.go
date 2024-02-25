@@ -14,7 +14,7 @@ type Mastodon struct {
 	Iteration int
 }
 
-func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
+func (u Mastodon) upload(ctx context.Context, upload Upload) (error, string) {
 	c := mastodon.NewClient(&mastodon.Config{
 		Server:       os.Getenv("MASTODON_SERVER"),
 		ClientID:     os.Getenv("MASTODON_CLIENT_ID"),
@@ -26,7 +26,7 @@ func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
 	var attachment *mastodon.Attachment
 	attachment, err := c.UploadMediaFromMedia(ctx, &mastodon.Media{
 		File:        bytes.NewReader(upload.Screenshot.File),
-		Description: upload.Screenshot.AltText.Long,
+		Description: upload.Screenshot.Description,
 	})
 	if err != nil {
 		log.FromContext(ctx).Error("Error while uploading screenshot", "screenshot ID", upload.Screenshot.ID, "error", err)

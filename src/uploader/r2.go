@@ -20,7 +20,7 @@ type R2 struct {
 	objectPath string
 }
 
-func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
+func (r2 *R2) upload(ctx context.Context, upload Upload) (error, string) {
 	// Set the object fields
 	r2.setObjectFields(upload)
 

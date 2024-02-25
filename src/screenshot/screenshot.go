@@ -7,20 +7,21 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/VictorBersy/minecraft-screenshot-bot/src/ai"
 	"github.com/charmbracelet/log"
 	"github.com/google/uuid"
 )
 
 type Screenshot struct {
-	ID      uuid.UUID
-	Name    string
-	Path    string
-	File    []byte
-	AltText ai.AltText
+	ID uuid.UUID
+
+	Description string
+	File        []byte
+	Name        string
+	Path        string
+	URL         string
 }
 
-func GetLatestScreenshot() Screenshot {
+func GetLatest() Screenshot {
 	fileInfo, err := getLastCreatedFile()
 	if err != nil {
 		log.Fatal(err)
