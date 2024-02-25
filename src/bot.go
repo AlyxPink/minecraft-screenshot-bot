@@ -52,7 +52,7 @@ func startUploadTask(i int, s screenshot.Screenshot) {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 	logger := log.NewWithOptions(os.Stderr, log.Options{
-		Prefix: fmt.Sprintf("[%d/%d] Screenshot ID: %s", i, SHOTS, s.ID.String()),
+		Prefix: fmt.Sprintf("[%d/%d] Screenshot ID: %s", i+1, SHOTS, s.ID.String()),
 	})
 	ctx = log.WithContext(ctx, logger)
 
