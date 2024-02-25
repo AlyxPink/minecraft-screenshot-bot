@@ -1,7 +1,6 @@
 package screenshot
 
 import (
-	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -28,16 +27,16 @@ func GetLatest() *Screenshot {
 	}
 
 	if fileInfo != nil {
-		log.Info(fmt.Sprintf("Screenshot found: %s, created at %s", fileInfo.Name(), fileInfo.ModTime()))
+		log.Info("Screenshot found: ", "name", fileInfo.Name(), "createdAt", fileInfo.ModTime())
 	} else {
-		log.Fatal(fmt.Sprintf("No screenshots found in dir %s.", os.Getenv("SCREENSHOTS_DIR_PATH")))
+		log.Fatal("No screenshots found", "SCREENSHOTS_DIR_PATH", os.Getenv("SCREENSHOTS_DIR_PATH"))
 	}
 
 	filePath := filepath.Join(os.Getenv("SCREENSHOTS_DIR_PATH"), fileInfo.Name())
 
 	file, err := os.ReadFile(filePath)
 	if err != nil {
-		log.Fatal(fmt.Sprintf("Error while opening screenshot file %s", filePath), "error", err)
+		log.Fatal("Error while opening screenshot file", "path", filePath, "error", err)
 	}
 
 	return &Screenshot{
