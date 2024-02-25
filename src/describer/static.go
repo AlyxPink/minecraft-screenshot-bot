@@ -6,6 +6,6 @@ import (
 
 type Static struct{}
 
-func (ai Static) GenerateFromURL(ctx context.Context, url string) (desc string, err error) {
+func (describer Static) GenerateFromURL(ctx context.Context, url string) (desc string, err error) {
 	return "Minecraft screenshot made by CraftViews bot.", nil
 }

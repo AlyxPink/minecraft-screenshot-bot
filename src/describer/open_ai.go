@@ -11,10 +11,10 @@ import (
 
 type OpenAI struct{}
 
-func (ai OpenAI) GenerateFromURL(ctx context.Context, url string) (desc string, err error) {
+func (describer OpenAI) GenerateFromURL(ctx context.Context, url string) (desc string, err error) {
 	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
 
-	log.FromContext(ctx).Info(fmt.Sprint("Sending request to OpenAI to describe the image."))
+	log.FromContext(ctx).Info(fmt.Sprint("Sending request to OpenAI to describe the image"))
 	resp, err := client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: openai.GPT4VisionPreview,
 		Messages: []openai.ChatCompletionMessage{

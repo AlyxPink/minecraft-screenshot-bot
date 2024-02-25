@@ -8,7 +8,7 @@ import (
 
 type Debug struct{}
 
-func (ai Debug) GenerateFromURL(ctx context.Context, url string) (desc string, err error) {
+func (describer Debug) GenerateFromURL(ctx context.Context, url string) (desc string, err error) {
 	log.FromContext(ctx).Debug(
 		"Debug describer called",
 		"url", url,

@@ -20,14 +20,14 @@ func Get() Describer {
 		return &Debug{}
 	}
 
-	switch os.Getenv("DESCRIPTOR") {
+	switch os.Getenv("DESCRIBER_SERVICE") {
 	case "static":
 		return &Static{}
 	case "openai":
 		return &OpenAI{}
 	}
 
-	return Static{}
+	return &Static{}
 }
 
 func logSuccess(ctx context.Context, serviceName string, desc string) {
