@@ -34,7 +34,7 @@ func (r2 *R2) Upload(ctx context.Context, upload Upload) (error, string) {
 	})
 
 	if err != nil {
-		log.Fatal("Error while uploading screenshot to R2", err)
+		log.FromContext(ctx).Fatal("Error while uploading screenshot to R2", err)
 		return err, ""
 	}
 
@@ -61,7 +61,7 @@ func newR2Client(ctx context.Context) *s3.Client {
 		config.WithRegion("auto"),
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.FromContext(ctx).Fatal(err)
 	}
 
 	return s3.NewFromConfig(cfg)

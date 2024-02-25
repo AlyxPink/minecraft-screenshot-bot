@@ -29,7 +29,7 @@ func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
 		Description: upload.Screenshot.AltText.Long,
 	})
 	if err != nil {
-		log.Error("Error while uploading screenshot", "screenshot ID", upload.Screenshot.ID, "error", err)
+		log.FromContext(ctx).Error("Error while uploading screenshot", "screenshot ID", upload.Screenshot.ID, "error", err)
 		return err, ""
 	}
 
@@ -46,10 +46,10 @@ func (u Mastodon) Upload(ctx context.Context, upload Upload) (error, string) {
 
 	status, err := c.PostStatus(ctx, post)
 	if err != nil {
-		log.Fatal(err)
+		log.FromContext(ctx).Fatal(err)
 	}
 
-	log.Info("Post scheduled", "scheduledAt", scheduledAt.String(), "statusID", status.ID)
+	log.FromContext(ctx).Info("Post scheduled", "scheduledAt", scheduledAt.String(), "statusID", status.ID)
 
 	return nil, attachment.URL
 }

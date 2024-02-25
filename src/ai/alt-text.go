@@ -13,10 +13,10 @@ type AltText struct {
 	Long string
 }
 
-func DescribeImage(ctx context.Context, screenshot_url string) AltText {
+func DescribeImage(ctx context.Context, screenshot_url string) (altText AltText) {
 	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
 
-	log.Info(fmt.Sprint("Sending request to OpenAI to get alt text..."))
+	log.FromContext(ctx).Info(fmt.Sprint("Sending request to OpenAI to get alt text..."))
 	resp, err := client.CreateChatCompletion(ctx, openai.ChatCompletionRequest{
 		Model: openai.GPT4VisionPreview,
 		Messages: []openai.ChatCompletionMessage{
@@ -41,13 +41,13 @@ func DescribeImage(ctx context.Context, screenshot_url string) AltText {
 	})
 
 	if err != nil {
-		fmt.Printf("Error while describing image, returning default alt-text: %v\n", err)
-		return AltText{Long: "Minecraft screenshot by CraftViews bot."}
+		log.FromContext(ctx).Error("Error while describing image, returning default alt-text", "error", err)
+		altText.Long = "Minecraft screenshot by CraftViews bot."
+		return altText
 	}
 
-	altText := resp.Choices[0].Message.Content
+	altText.Long = fmt.Sprintf("Minecraft screenshot. AI generated alt text: %s", resp.Choices[0].Message.Content)
+	log.FromContext(ctx).Info("Screenshot alt-text generated successfully", "alt-text", altText)
 
-	log.Info(fmt.Sprintf("Screenshot alt-text generated: %s", altText))
-
-	return AltText{Long: fmt.Sprintf("Minecraft screenshot. AI generated alt text: %s", altText)}
+	return altText
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"os"
 	"sync"
 	"time"
 
@@ -25,13 +26,23 @@ func Start() {
 	minecraft.CreateNewWorld()
 	minecraft.SetupScreenshot()
 	for i := 0; i < SHOTS; i++ {
+		// Create a new context with a timeout
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+
+		// Start the game and take a screenshot
 		log.Info(fmt.Sprintf("** Taking a new screenshot (%d/%d) **", i, SHOTS))
 		minecraft.SetRandomTime()
 		minecraft.SetRandomWeather()
 		minecraft.TeleportPlayer()
 		minecraft.TakeRandomScreenshot()
 		latestScreenshot := screenshot.GetLatestScreenshot()
+
+		// Create logger and add it to the context
+		logger := log.NewWithOptions(os.Stderr, log.Options{
+			Prefix: fmt.Sprintf("[%d/%d] Screenshot ID: %s", i, SHOTS, latestScreenshot.ID.String()),
+		})
+		ctx = log.WithContext(ctx, logger)
+
 		wg.Add(1) // Indicate that there's one more goroutine to wait for
 		go func(i int) {
 			defer cancel()
@@ -45,7 +56,6 @@ func Start() {
 }
 
 func uploadScreenshot(ctx context.Context, i int, s screenshot.Screenshot) {
-	log.SetPrefix(fmt.Sprintf("Screenshot ID: %s", s.ID.String()))
 	// Set up the upload struct
 	upload := uploader.Upload{Screenshot: s}
 
@@ -57,8 +67,8 @@ func uploadScreenshot(ctx context.Context, i int, s screenshot.Screenshot) {
 		altText := ai.DescribeImage(ctx, url)
 		upload.Screenshot.AltText = altText
 	} else {
-		log.Error("Error uploading to R2: %v", err)
-		log.Warn("Skipping getting alt text from OpenAI")
+		log.FromContext(ctx).Error("Error uploading to R2: %v", err)
+		log.FromContext(ctx).Warn("Skipping getting alt text from OpenAI")
 	}
 
 	// Load the uploaders
@@ -78,12 +88,12 @@ func uploadWithRetry(ctx context.Context, u uploader.Uploader, upload uploader.U
 	for i := 0; i < maxRetries; i++ {
 		err, url := u.Upload(ctx, upload)
 		if err == nil {
-			log.Info(fmt.Sprintf("Uploaded to %T: %s", u, url))
+			log.FromContext(ctx).Info(fmt.Sprintf("Uploaded to %T: %s", u, url))
 			break
 		}
 
 		retryDelay = time.Duration(float64(retryDelay) * math.Pow(2, float64(i)))
-		log.Error("Error uploading", "retryDelay", retryDelay, "upload", upload, "err", err)
+		log.FromContext(ctx).Error("Error uploading", "retryDelay", retryDelay, "upload", upload, "err", err)
 
 		// Sleep for the current delay, then double it for the next iteration
 		time.Sleep(retryDelay)
