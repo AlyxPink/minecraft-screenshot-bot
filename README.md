@@ -4,7 +4,7 @@
 
 Capture and share the beauty of Minecraft landscapes! This script launches Minecraft, takes screenshots, and posts them to Mastodon.
 
-How does it work? French article: https://blog.alyxpractice.com/comment-fonctionne-mon-bot-craftviews/
+How does it work? French article: https://blog.alyx.pink/comment-fonctionne-mon-bot-craftviews/
 
 ## 📸 Sample Screenshots
 
