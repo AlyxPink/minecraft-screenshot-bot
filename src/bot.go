@@ -47,7 +47,7 @@ func startBatch(batchSize int) {
 	wg.Wait() // Wait for all goroutines to finish
 }
 
-func startUploadTask(i int, s screenshot.Screenshot) {
+func startUploadTask(i int, s *screenshot.Screenshot) {
 	// Set up the context and logger
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()

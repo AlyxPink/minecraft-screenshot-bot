@@ -11,7 +11,7 @@ import (
 )
 
 type Upload struct {
-	Screenshot screenshot.Screenshot
+	Screenshot *screenshot.Screenshot
 }
 
 type Uploader interface {

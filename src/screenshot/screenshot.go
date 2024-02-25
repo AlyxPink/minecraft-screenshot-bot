@@ -21,16 +21,16 @@ type Screenshot struct {
 	URL         string
 }
 
-func GetLatest() Screenshot {
+func GetLatest() *Screenshot {
 	fileInfo, err := getLastCreatedFile()
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if fileInfo != nil {
-		log.Info(fmt.Sprintf("Screenshot found: %s, created at %s\n", fileInfo.Name(), fileInfo.ModTime()))
+		log.Info(fmt.Sprintf("Screenshot found: %s, created at %s", fileInfo.Name(), fileInfo.ModTime()))
 	} else {
-		log.Fatal(fmt.Sprintf("Screenshot not found in dir %s.", os.Getenv("SCREENSHOTS_DIR_PATH")))
+		log.Fatal(fmt.Sprintf("No screenshots found in dir %s.", os.Getenv("SCREENSHOTS_DIR_PATH")))
 	}
 
 	filePath := filepath.Join(os.Getenv("SCREENSHOTS_DIR_PATH"), fileInfo.Name())
@@ -40,7 +40,7 @@ func GetLatest() Screenshot {
 		log.Fatal(fmt.Sprintf("Error while opening screenshot file %s", filePath), "error", err)
 	}
 
-	return Screenshot{
+	return &Screenshot{
 		ID:   uuid.New(),
 		Name: fileInfo.Name(),
 		Path: filePath,

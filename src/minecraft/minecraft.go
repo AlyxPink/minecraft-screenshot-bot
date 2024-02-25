@@ -30,7 +30,7 @@ func (m *minecraft) Setup() {
 	setupScreenshot()
 }
 
-func (m *minecraft) CaptureScreenshot() screenshot.Screenshot {
+func (m *minecraft) CaptureScreenshot() *screenshot.Screenshot {
 	teleportPlayer()
 	setRandomTime()
 	setRandomWeather()
