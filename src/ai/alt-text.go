@@ -25,7 +25,7 @@ func DescribeImage(ctx context.Context, screenshot_url string) AltText {
 				MultiContent: []openai.ChatMessagePart{
 					{
 						Type: openai.ChatMessagePartTypeText,
-						Text: "Can you describe accurately the landscape of this Minecraft screenshot? Text must be under 1000 characters.",
+						Text: "Can you describe accurately the landscape of this Minecraft screenshot? Text must be under 1000 characters but make it shorter if there isn't much to describe. Don't mention it's a Minecraft screenshot, we know that already.",
 					},
 					{
 						Type: openai.ChatMessagePartTypeImageURL,
