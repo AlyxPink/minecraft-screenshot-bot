@@ -93,9 +93,9 @@ func CreateNewWorld() {
 }
 
 func SetupScreenshot() {
-	time.Sleep(2 * time.Second)
+	time.Sleep(3 * time.Second)
 	runMinecraftChatCommand("/gamemode spectator")
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 	robotgo.KeyTap("f1") // Hide HUD
 }
 
@@ -103,6 +103,7 @@ func SetRandomTime() {
 	dayTime := getRandomTime()
 	log.Info(fmt.Sprintf("Time set to %s", dayTime))
 	runMinecraftChatCommand(fmt.Sprintf("/time set %s", dayTime))
+	time.Sleep(1 * time.Second)
 }
 
 func SetRandomWeather() {
@@ -117,19 +118,25 @@ func SetRandomWeather() {
 
 	log.Info(fmt.Sprintf("Weather set to %s", weather))
 	runMinecraftChatCommand(fmt.Sprintf("/weather %s", weather))
+	time.Sleep(1 * time.Second)
 }
 
 func TeleportPlayer() {
 	// Teleport the player to random surface location in a 20,000×20,000-block area centered on (0,0)
 	runMinecraftChatCommand("/spreadplayers 0 0 0 10000 true @p")
-	time.Sleep(2 * time.Second) // Wait for the TP to happen
+	time.Sleep(4 * time.Second) // Wait for the TP to happen
+
 	// Set player's camera to random rotation
 	rot := getRandomAngle()
 	log.Info(fmt.Sprintf("Random rotation: 'RX: %s, RZ: %s'", rot.rx, rot.rz))
+	time.Sleep(2 * time.Second)
 	runMinecraftChatCommand(fmt.Sprintf("/tp @p ~ ~ ~ %s %s", rot.rx, rot.rz))
+
 	// Teleport player 8 blocks above max
+	time.Sleep(2 * time.Second)
 	runMinecraftChatCommand(fmt.Sprintf("/tp @p ~ ~%d ~", rand.Intn(9)))
 
+	// Wait for the chunks to load
 	log.Info("Loading chunks", "sleep", WAIT_CHUNKS_LOADING)
 	time.Sleep((WAIT_CHUNKS_LOADING * time.Second)) // Wait for the chunks generation and rendering
 }
@@ -142,6 +149,7 @@ func TakeRandomScreenshot() {
 }
 
 func QuitGame() {
+	time.Sleep(2 * time.Second)
 	// Close the game
 	robotgo.KeyTap("q", "cmd")
 }
