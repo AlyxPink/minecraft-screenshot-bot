@@ -15,6 +15,7 @@ import (
 )
 
 const (
+	// Check Mastodon limits: https://github.com/mastodon/mastodon/blob/e8605a69d22e369e34914548338c15c053db9667/app/models/scheduled_status.rb#L16-L17
 	SHOTS = 24
 )
 
