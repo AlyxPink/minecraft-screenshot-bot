@@ -52,6 +52,12 @@ How does it work? French article: https://blog.alyx.pink/comment-fonctionne-mon-
 
 Check it out on Mastodon at [3615.computer/@CraftViews](https://3615.computer/@CraftViews/).
 
+## ☕ Support me
+
+Even 1€ will goes a long way, it's so good to know your work is being appreciated 🥺
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E6U8W0G)
+
 ## 🧰 Tools Required
 
 ### 🧱 Curseforge/Minecraft
