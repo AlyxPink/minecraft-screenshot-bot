@@ -76,8 +76,6 @@ func CreateNewWorld() {
 	robotgo.KeyTap("tab")
 	robotgo.KeyTap("tab")   // Create new world
 	robotgo.KeyTap("enter") // Select
-	robotgo.KeyTap("a", "cmd")
-	robotgo.KeyTap("backspace")
 	robotgo.TypeStr("BOT_SCREENSHOT")
 	robotgo.KeyTap("tab")
 	robotgo.KeyTap("space") // Turn hardcore mode
