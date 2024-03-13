@@ -3,7 +3,7 @@ package uploader
 import (
 	"context"
 
-	"github.com/VictorBersy/minecraft-screenshot-bot/src/screenshot"
+	"github.com/AlyxPink/minecraft-screenshot-bot/src/screenshot"
 )
 
 type Upload struct {
