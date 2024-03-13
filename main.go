@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/VictorBersy/minecraft-screenshot-bot/src"
+	"github.com/AlyxPink/minecraft-screenshot-bot/src"
 
 	"github.com/charmbracelet/log"
 	"github.com/joho/godotenv"

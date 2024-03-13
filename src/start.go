@@ -7,10 +7,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/VictorBersy/minecraft-screenshot-bot/src/ai"
-	"github.com/VictorBersy/minecraft-screenshot-bot/src/minecraft"
-	"github.com/VictorBersy/minecraft-screenshot-bot/src/screenshot"
-	"github.com/VictorBersy/minecraft-screenshot-bot/src/uploader"
+	"github.com/AlyxPink/minecraft-screenshot-bot/src/ai"
+	"github.com/AlyxPink/minecraft-screenshot-bot/src/minecraft"
+	"github.com/AlyxPink/minecraft-screenshot-bot/src/screenshot"
+	"github.com/AlyxPink/minecraft-screenshot-bot/src/uploader"
 	"github.com/charmbracelet/log"
 )
 

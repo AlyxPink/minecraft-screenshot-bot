@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/VictorBersy/minecraft-screenshot-bot/src/ai"
+	"github.com/AlyxPink/minecraft-screenshot-bot/src/ai"
 	"github.com/charmbracelet/log"
 	"github.com/google/uuid"
 )
