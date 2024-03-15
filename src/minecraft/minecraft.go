@@ -56,7 +56,7 @@ func Launch() {
 		"--versionType", "release",
 		"--width", "1920",
 		"--height", "1080",
-		"--quickPlayPath", "/Users/alyx/Minecraft/Install/quickPlay/java/1698871293341.json",
+		"--quickPlayPath", "/Users/alyx/Minecraft/Install/quickPlay/java/1710530991325.json",
 	)
 
 	if err := cmd.Start(); err != nil {
