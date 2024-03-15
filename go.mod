@@ -60,4 +60,4 @@ require (
 	github.com/sashabaranov/go-openai v1.19.3
 )
 
-replace github.com/mattn/go-mastodon => github.com/AlyxPink/go-mastodon v0.0.0-20231029192652-40eaccca403d
+replace github.com/mattn/go-mastodon => github.com/AlyxPractice/go-mastodon v0.0.0-20231029192652-40eaccca403d
