@@ -69,7 +69,7 @@ func newR2Client(ctx context.Context) *s3.Client {
 
 func (r2 *R2) setObjectFields(upload Upload) {
 	r2.objectPath = r2.getObjectPath(upload)
-	r2.objectURL = r2.getObjectURL(upload)
+	r2.objectURL = r2.getObjectURL()
 }
 
 func (r2 *R2) getObjectPath(upload Upload) string {
@@ -79,7 +79,7 @@ func (r2 *R2) getObjectPath(upload Upload) string {
 	)
 }
 
-func (r2 *R2) getObjectURL(upload Upload) url.URL {
+func (r2 *R2) getObjectURL() url.URL {
 	return url.URL{
 		Scheme: "https",
 		Host:   os.Getenv("R2_PUBLIC_DOMAIN"),
