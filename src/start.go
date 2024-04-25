@@ -33,6 +33,7 @@ func Start() {
 		minecraft.TeleportPlayer()
 		minecraft.TakeRandomScreenshot()
 		latestScreenshot := screenshot.GetLatestScreenshot()
+		log.Info(fmt.Sprintf("Screenshot path: %s", latestScreenshot.Path))
 		wg.Add(1) // Indicate that there's one more goroutine to wait for
 		go func(i int) {
 			defer cancel()
