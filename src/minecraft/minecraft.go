@@ -13,7 +13,7 @@ import (
 
 const (
 	WAIT_GAME_LAUNCH    = 15
-	WAIT_GENERATION     = 15
+	WAIT_MAP_INIT       = 15
 	WAIT_CHUNKS_LOADING = 45
 )
 
@@ -86,8 +86,8 @@ func CreateNewWorld() {
 	robotgo.KeyTap("enter") // Create new world
 
 	// Wait for world generation to complete
-	log.Info("Generating world", "sleep", WAIT_GENERATION)
-	time.Sleep(WAIT_GENERATION * time.Second)
+	log.Info("Generating world", "sleep", WAIT_MAP_INIT)
+	time.Sleep(WAIT_MAP_INIT * time.Second)
 }
 
 func SetupScreenshot() {
