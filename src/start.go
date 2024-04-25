@@ -90,7 +90,7 @@ func uploadWithRetry(ctx context.Context, u uploader.Uploader, upload uploader.U
 		}
 
 		retryDelay = time.Duration(float64(retryDelay) * math.Pow(2, float64(i)))
-		log.Error("Error uploading", "retryDelay", retryDelay, "upload", upload, "err", err)
+		log.Error("Error uploading", "retryDelay", retryDelay, "upload_path", upload.Screenshot.Path, "err", err)
 
 		// Sleep for the current delay, then double it for the next iteration
 		time.Sleep(retryDelay)
