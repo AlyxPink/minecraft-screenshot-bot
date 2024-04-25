@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math"
+	"os"
 	"sync"
 	"time"
 
@@ -38,6 +39,10 @@ func Start() {
 		go func(i int) {
 			defer cancel()
 			defer wg.Done() // Signal that this goroutine is done
+			if os.Getenv("DRY_RUN") != "" {
+				log.Warn("DRY_RUN is set, skipping uploads")
+				return
+			}
 			uploadScreenshot(ctx, i, latestScreenshot)
 		}(i)
 	}
