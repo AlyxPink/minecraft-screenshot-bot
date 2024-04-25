@@ -69,7 +69,7 @@ func Launch() {
 
 func CreateNewWorld() {
 	// Navigate the menu to create a new world
-	robotgo.KeySleep = 350
+	robotgo.KeySleep = 500
 	robotgo.KeyTap("down")  // Singleplayer
 	robotgo.KeyTap("enter") // Enter singleplayer
 	robotgo.KeyTap("tab")
@@ -154,7 +154,9 @@ func QuitGame() {
 
 func runMinecraftChatCommand(cmd string) {
 	robotgo.KeyTap("t") // Enter chat
+	time.Sleep(1 * time.Second)
 	robotgo.TypeStr(cmd)
+	time.Sleep(1 * time.Second)
 	robotgo.KeyTap("enter") // Run command
 }
 
